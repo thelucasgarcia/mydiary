@@ -1,13 +1,14 @@
 const _ = require('lodash');
 const database = require('../utils/database');
 const { v4: uuid } = require('uuid');
+const bcrypt = require('bcrypt');
 
 class UserSchema {
     constructor(data) {
         this.id = uuid();
-        this.name = data.name;
-        this.email = data.email;
-        this.password = data.password;
+        this.name = data?.name;
+        this.email = data?.email;
+        this.password = bcrypt.hashSync(data?.password, 8); // requesting crypt password 
     }
 }
 
@@ -41,7 +42,7 @@ class User {
 
     static delete(id) {
         const records = database.getDataFromDatabase(this.model);
-        _.remove(records, (item) => { return item.id == id });
+        _.remove(records, (item) => { return item.id === id });
         database.setDataFromDatabase(this.model, records);
         return this.find(id);
     }
